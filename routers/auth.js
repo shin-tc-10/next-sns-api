@@ -8,7 +8,6 @@ const generateIdenticon = require("../utils/generateIdenticon");
 
 // 新規ユーザー登録
 router.post("/register", async (req, res) => {
-  console.log("register!!!");
 
   const { username, email, password } = req.body;
 
@@ -38,18 +37,12 @@ router.post("/register", async (req, res) => {
 
 // ユーザー退会
 router.post("/delete", async (req, res) => {
-  console.log("delete!!!");
 
   const { user } = req.body;
 
-  const userInfo = await prisma.user.update({
-    where: {id: user.id},
-    data: {
-      isDeleted: true
-    },
-  });
+  const response = await prisma.user.update({where: {id: user.id}, data: {isDeleted: true}});
 
-  return res.json({ userInfo });
+  return res.json({ response });
 });
 
 // ユーザログインAPI
@@ -64,7 +57,7 @@ router.post("/login", async (req, res) => {
   }
 
   if (user.isDeleted) {
-    throw new Error('退会済みのユーザーです。');
+    return res.status(401).json({ error: "退会済みのユーザーです。" });
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
