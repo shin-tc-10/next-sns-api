@@ -36,6 +36,22 @@ router.post("/register", async (req, res) => {
   return res.json({ user });
 });
 
+// ユーザー退会
+router.post("/delete", async (req, res) => {
+  console.log("delete!!!");
+
+  const { user } = req.body;
+
+  const userInfo = await prisma.user.update({
+    where: {id: user.id},
+    data: {
+      isDeleted: true
+    },
+  });
+
+  return res.json({ userInfo });
+});
+
 // ユーザログインAPI
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -45,6 +61,10 @@ router.post("/login", async (req, res) => {
     return res
       .status(401)
       .json({ errorr: "メールアドレスかパスワードが間違っています。" });
+  }
+
+  if (user.isDeleted) {
+    throw new Error('退会済みのユーザーです。');
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
