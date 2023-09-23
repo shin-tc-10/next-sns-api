@@ -4,7 +4,37 @@ const prisma = new PrismaClient();
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// const generateIdenticon = require("../utils/generateIdenticon");
+const generateIdenticon = require("../utils/generateIdenticon");
+
+// 新規ユーザー登録
+router.post("/register", async (req, res) => {
+  console.log("register!!!");
+
+  const { username, email, password } = req.body;
+
+  const defaultIconImage = generateIdenticon(email);
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await prisma.user.create({
+    data: {
+      username,
+      email,
+      password: hashedPassword,
+      profile: {
+        create: {
+          bio: "はじめまして",
+          profileImageUrl: defaultIconImage,
+        },
+      },
+      // include: {
+      //   profile: true,
+      // }
+    },
+  });
+
+  return res.json({ user });
+});
 
 // ユーザログインAPI
 router.post("/login", async (req, res) => {
