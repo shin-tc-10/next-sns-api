@@ -7,6 +7,8 @@ const isAuthenticated = require("../middlewares/isAuthenticated");
 const prisma = new PrismaClient();
 
 router.get("/find", isAuthenticated, async (req, res) => {
+  console.log("www");
+
   try {
     // DBからユーザ情報を取得
     const user = await prisma.user.findUnique({ where: { id: req.userId } });
