@@ -60,6 +60,7 @@ router.get("/get_latest_post", async (req, res) => {
 // 閲覧しているユーザーの投稿内容だけを取得
 router.get("/:userId", async (req, res) => {
   const { userId } = req.params;
+  console.log("test");
 
   try {
     const userPosts = await prisma.post.findMany({
@@ -67,7 +68,7 @@ router.get("/:userId", async (req, res) => {
         authorId: parseInt(userId),
       },
       orderBy: {
-        createdBy: "desc",
+        createdAt: "desc",
       },
       include: {
         author: true,
