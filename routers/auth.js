@@ -8,6 +8,7 @@ const generateIdenticon = require("../utils/generateIdenticon");
 
 // 新規ユーザー登録
 router.post("/register", async (req, res) => {
+  console.log("Received registration request with body:", req.body);
 
   const { username, email, password } = req.body;
 
@@ -40,7 +41,7 @@ router.post("/delete", async (req, res) => {
 
   const { user } = req.body;
 
-  const response = await prisma.user.update({where: {id: user.id}, data: {isDeleted: true}});
+  const response = await prisma.user.update({ where: { id: user.id }, data: { isDeleted: true } });
 
   return res.json({ response });
 });
