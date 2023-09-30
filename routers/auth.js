@@ -6,10 +6,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const generateIdenticon = require("../utils/generateIdenticon");
 
-// 新規ユーザー登録
+// 新規ユーザー登録API
 router.post("/register", async (req, res) => {
-  console.log("Received registration request with body:", req.body);
-
   const { username, email, password } = req.body;
 
   const defaultIconImage = generateIdenticon(email);
@@ -27,9 +25,9 @@ router.post("/register", async (req, res) => {
           profileImageUrl: defaultIconImage,
         },
       },
-      // include: {
-      //   profile: true,
-      // }
+      include: {
+        profile: true,
+      }
     },
   });
 
