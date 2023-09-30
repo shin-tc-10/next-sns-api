@@ -36,6 +36,28 @@ router.post("/post", isAuthenticated, async (req, res) => {
   }
 });
 
+// 呟き投稿削除用API
+router.post("/postDelete", isAuthenticated, async (req, res) => {
+  const { postId } = req.body;
+
+  if (!postId) {
+    return res.status(400).json({ message: "投稿内容がありません。" });
+  }
+
+  try {
+    const newPost = await prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+
+    res.status(201).json(newPost);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "サーバーエラーです。" });
+  }
+});
+
 // 最新つぶやき取得用API
 router.get("/get_latest_post", async (req, res) => {
   try {
